@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 40px; /* Adjusted padding for menu */
+        }
+        h2, h3 {
+            text-align: center;
+        }
+        .verse {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .verse-number {
+            font-weight: bold;
+        }
+        .highlight {
+            background-color: gray;
+        }
+        .highlight-text {
+        	background-color: yellow;
+        }
+        .menu {
+            position: fixed;
+            bottom: 10px; /* Changed to float above the bottom */
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 123, 255, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.5s, opacity 0.5s;
+            opacity: 1;
+        }
+        .menu.hidden {
+            transform: translateX(-50%) translateY(100%);
+            opacity: 0;
+        }
+        .menu select, .menu button, .menu input {
+            padding: 8px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+        .menu select {
+            flex-grow: 1;
+        }
+        .menu button, .menu input {
+            background: white;
+            color: #007bff;
+            cursor: pointer;
+        }
+        .menu button:hover, .menu input:hover {
+            background: #e0e0e0;
+        }
+        #content {
+            width: 90%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        #loading {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="content"></div>
+    <div class="menu" id="menu">
+        <select id="versionSelect">
+            <option value="kjv">KJV</option>
+            <option value="ylt">YLT</option>
+            <option value="erv">ERV</option>
+            <!-- Add more versions here -->
+        </select>
+        <select id="bookSelect"></select>
+        <select id="chapterSelect"></select>
+        <input type="number" id="verseInput" placeholder="Verse" min="1">
+        <button id="goButton">Go</button>
+        <button id="prevButton">Previous</button>
+        <button id="nextButton">Next</button>
+    </div>
+
+    <script>
+        let currentBook = '';
+        let currentChapter = 1;
+        let chapterCache = {};
+        let bibleData = {};
+
+        async function fetchBibleText(version) {
+            const url = `https://ethanselagea.weebly.com/uploads/1/5/0/7/150702136/${version}_bible.txt`;
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const text = await response.text();
+            return text;
+        }
+
+        function parseBibleText(rawText) {
+            const lines = rawText.trim().split('\n');
+            const bibleData = {};
+            let currentBook = '';
+            let currentChapter = '';
+
+            lines.forEach(line => {
+                const match = line.match(/(\w+ \d+:\d+)\s+(.*)/);
+                if (match) {
+                    const [ , fullRef, verseContent ] = match;
+                    const [bookChapter, verse] = fullRef.split(':');
+                    const book = bookChapter.split(' ').slice(0, -1).join(' ');
+                    const chapter = bookChapter.split(' ').slice(-1)[0];
+
+                    if (!bibleData[book]) {
+                        bibleData[book] = {};
+                    }
+                    if (!bibleData[book][chapter]) {
+                        bibleData[book][chapter] = [];
+                    }
+
+                    bibleData[book][chapter].push({
+                        verse,
+                        content: verseContent.trim()
+                    });
+                }
+            });
+
+            return bibleData;
+        }
+
+        function renderBibleText(book, chapter) {
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = '';
+
+            if (chapterCache[book][chapter]) {
+                const chapterData = chapterCache[book][chapter];
+                const h2 = document.createElement('h2');
+                h2.textContent = book;
+                contentDiv.appendChild(h2);
+
+                const h3 = document.createElement('h3');
+                h3.textContent = `Chapter ${chapter}`;
+                contentDiv.appendChild(h3);
+
+                chapterData.forEach(verse => {
+                    const div = document.createElement('div');
+                    div.classList.add('verse');
+                    div.innerHTML = `<span class="verse-number" data-verse="${verse.verse}">${verse.verse}</span> <span class="content">${verse.content}</span>`;
+                    contentDiv.appendChild(div);
+                });
+            }
+            restoreHighlightedVerses();
+        }
+
+        function loadChapters(book, startChapter, endChapter) {
+            for (let chapter = startChapter; chapter <= endChapter; chapter++) {
+                if (!chapterCache[book]) {
+                    chapterCache[book] = {};
+                }
+                if (bibleData[book] && bibleData[book][chapter]) {
+                    chapterCache[book][chapter] = bibleData[book][chapter];
+                }
+            }
+        }
+
+        async function initializeApp() {
+            const version = document.getElementById('versionSelect').value;
+            const rawText = await fetchBibleText(version);
+            bibleData = parseBibleText(rawText);
+
+            const bookSelect = document.getElementById('bookSelect');
+            Object.keys(bibleData).forEach(book => {
+                const option = document.createElement('option');
+                option.value = book;
+                option.textContent = book;
+                bookSelect.appendChild(option);
+            });
+
+            currentBook = bookSelect.value;
+            chapterCache[currentBook] = {};
+
+            const chapterSelect = document.getElementById('chapterSelect');
+            updateChapterSelect(currentBook);
+
+            loadChapters(currentBook, currentChapter, currentChapter + 3);
+            renderBibleText(currentBook, currentChapter);
+            
+            restoreHighlightedVerses();
+
+            bookSelect.addEventListener('change', () => {
+                currentBook = bookSelect.value;
+                currentChapter = 1;
+                chapterCache[currentBook] = {};
+                updateChapterSelect(currentBook);
+                loadChapters(currentBook, currentChapter, currentChapter + 3);
+                renderBibleText(currentBook, currentChapter);
+            });
+
+            chapterSelect.addEventListener('change', () => {
+                currentChapter = parseInt(chapterSelect.value);
+                loadChapters(currentBook, currentChapter, currentChapter + 2);
+                renderBibleText(currentBook, currentChapter);
+            });
+
+            document.getElementById('prevButton').addEventListener('click', () => {
+                if (currentChapter > 1) {
+                    currentChapter--;
+                    updateChapterSelect(currentBook);
+                    renderBibleText(currentBook, currentChapter);
+                    if (currentChapter < 3) {
+                        loadChapters(currentBook, 1, 3);
+                    } else {
+                        loadChapters(currentBook, currentChapter - 2, currentChapter + 1);
+                    }
+                }
+            });
+
+            document.getElementById('nextButton').addEventListener('click', () => {
+                if (currentChapter < Object.keys(bibleData[currentBook]).length) {
+                    currentChapter++;
+                    updateChapterSelect(currentBook);
+                    renderBibleText(currentBook, currentChapter);
+                    loadChapters(currentBook, currentChapter + 1, currentChapter + 2);
+                }
+            });
+
+            document.getElementById('goButton').addEventListener('click', () => {
+                const verseInput = document.getElementById('verseInput').value;
+                if (verseInput) {
+                    scrollToVerse(verseInput);
+                }
+            });
+
+            document.getElementById('versionSelect').addEventListener('change', async () => {
+                chapterCache = {}; // Clear cache on version change
+                currentBook = bookSelect.value;
+                currentChapter = 1;
+                const newVersion = document.getElementById('versionSelect').value;
+                const newRawText = await fetchBibleText(newVersion);
+                bibleData = parseBibleText(newRawText);
+                loadChapters(currentBook, currentChapter, currentChapter + 3);
+                renderBibleText(currentBook, currentChapter);
+            });
+        }
+
+        function updateChapterSelect(book) {
+            const chapterSelect = document.getElementById('chapterSelect');
+            chapterSelect.innerHTML = '';
+            const chapters = Object.keys(bibleData[book]);
+            chapters.forEach(chapter => {
+                const option = document.createElement('option');
+                option.value = chapter;
+                option.textContent = chapter;
+                chapterSelect.appendChild(option);
+            });
+            chapterSelect.value = currentChapter;
+        }
+
+        function scrollToVerse(verse) {
+            const verseElement = document.querySelector(`.verse-number[data-verse="${verse}"]`);
+            if (verseElement) {
+                document.querySelectorAll('.verse').forEach(el => el.classList.remove('highlight'));
+                verseElement.parentElement.classList.add('highlight');
+                verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function handleScroll() {
+            const menu = document.getElementById('menu');
+            const scrollPosition = window.pageYOffset;
+            if (scrollPosition > lastScrollPosition) {
+                menu.classList.add('hidden');
+            } else {
+                menu.classList.remove('hidden');
+            }
+            lastScrollPosition = scrollPosition;
+        }
+        
+        function highlightVerse(verse) {
+    const verseElement = document.querySelector(`.verse-number[data-verse="${verse}"]`);
+    if (verseElement) {
+        verseElement.parentElement.classList.toggle('highlight-text'); // Toggle highlight class
+
+        const highlightedVerses = JSON.parse(localStorage.getItem('highlightedVerses')) || {};
+        const book = currentBook;
+        const chapter = currentChapter;
+
+        if (!highlightedVerses[book]) {
+            highlightedVerses[book] = {};
+        }
+        if (!highlightedVerses[book][chapter]) {
+            highlightedVerses[book][chapter] = [];
+        }
+
+        // Add or remove the verse from the highlightedVerses
+        const verseIndex = highlightedVerses[book][chapter].indexOf(verse);
+        if (verseIndex === -1) {
+            highlightedVerses[book][chapter].push(verse);
+        } else {
+            highlightedVerses[book][chapter].splice(verseIndex, 1);
+        }
+
+        localStorage.setItem('highlightedVerses', JSON.stringify(highlightedVerses));
+    }
+}
+
+function restoreHighlightedVerses() {
+    const highlightedVerses = JSON.parse(localStorage.getItem('highlightedVerses')) || {};
+    const book = currentBook;
+    const chapter = currentChapter;
+
+    if (highlightedVerses[book] && highlightedVerses[book][chapter]) {
+        highlightedVerses[book][chapter].forEach(verse => {
+            const verseElement = document.querySelector(`.verse-number[data-verse="${verse}"]`);
+            if (verseElement) {
+                verseElement.parentElement.classList.add('highlight');
+            }
+        });
+    }
+}
+
+// Call restoreHighlightedVerses after rendering the Bible text
+document.addEventListener('DOMContentLoaded', () => {
+    initializeApp();
+    restoreHighlightedVerses();
+});
+
+// Add event listener to verses for highlighting
+document.addEventListener('click', event => {
+    if (event.target.classList.contains('verse-number')) {
+        const verse = event.target.getAttribute('data-verse');
+        highlightVerse(verse);
+    }
+});
+
+
+        let lastScrollPosition = 0;
+        window.addEventListener('scroll', handleScroll);
+
+
+    </script>
+</body>
+</html>
