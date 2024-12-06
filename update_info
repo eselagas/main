@@ -1,0 +1,10 @@
+{
+    "updates": [
+        {
+            "title": "EBF Editor",
+            "version": "2.0.0",
+            "size": "8 KB",
+            "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/Beta%20editor.html"
+        }
+    ]
+}
