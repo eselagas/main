@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simon Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #2c3e50;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+
+        #game {
+            display: grid;
+            grid-template-columns: repeat(2, 120px);
+            grid-template-rows: repeat(2, 120px);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .color {
+            width: 120px;
+            height: 120px;
+            border-radius: 15px;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s, transform 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .color:active {
+            transform: scale(0.95);
+        }
+
+        #red { background-color: #e74c3c; }
+        #blue { background-color: #3498db; }
+        #green { background-color: #2ecc71; }
+        #yellow { background-color: #f1c40f; }
+
+        #start {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #e67e22;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #start:hover {
+            background-color: #d35400;
+        }
+
+        .active {
+            opacity: 1 !important;
+            transform: scale(1.1);
+        }
+
+        #level-counter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+        }
+
+        #message-box {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            position: fixed;
+            bottom: 20px;
+        }
+
+        #message-box.show {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #message-text {
+            margin-bottom: 10px;
+        }
+
+        #ok-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #e67e22;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            transition: background-color 0.2s;
+        }
+
+        #ok-button:hover {
+            background-color: #d35400;
+        }
+
+        @media (max-width: 600px) {
+            #game {
+                grid-template-columns: repeat(2, 80px);
+                grid-template-rows: repeat(2, 80px);
+                gap: 5px;
+            }
+
+            .color {
+                width: 80px;
+                height: 80px;
+            }
+
+            #start {
+                margin-top: 10px;
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+
+            #level-counter {
+                font-size: 16px;
+            }
+
+            #message-text {
+                font-size: 16px;
+            }
+
+            #ok-button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="level-counter"></div>
+    <div id="game">
+        <div id="red" class="color"></div>
+        <div id="blue" class="color"></div>
+        <div id="green" class="color"></div>
+        <div id="yellow" class="color"></div>
+    </div>
+    <button id="start">Start Game</button>
+    <div id="message-box">
+        <div id="message-text">Wrong square. Click to restart</div>
+        <button id="ok-button">OK</button>
+    </div>
+    <script>
+        const colors = ["red", "blue", "green", "yellow"];
+        let sequence = [];
+        let playerSequence = [];
+        let level = 0;
+
+        const startButton = document.getElementById("start");
+        const colorButtons = document.querySelectorAll(".color");
+        const levelCounter = document.getElementById("level-counter");
+        const messageBox = document.getElementById("message-box");
+        const okButton = document.getElementById("ok-button");
+
+        startButton.addEventListener("click", startGame);
+
+        colorButtons.forEach(button => {
+            button.addEventListener("click", () => handlePlayerClick(button.id));
+        });
+
+        okButton.addEventListener("click", () => {
+            messageBox.style.display = "none";
+            startButton.style.display = "block";
+        });
+
+        function startGame() {
+            startButton.style.display = "none";
+            sequence = [];
+            playerSequence = [];
+            level = 0;
+            updateLevelCounter();
+            nextLevel();
+        }
+
+        function nextLevel() {
+            level++;
+            updateLevelCounter();
+            playerSequence = [];
+            const nextColor = colors[Math.floor(Math.random() * colors.length)];
+            sequence.push(nextColor);
+            playSequence();
+        }
+
+        function playSequence() {
+            let delay = 500;
+            sequence.forEach((color, index) => {
+                setTimeout(() => flashColor(color), delay * (index + 1));
+            });
+        }
+
+        function flashColor(color) {
+            const button = document.getElementById(color);
+            button.classList.add("active");
+            setTimeout(() => button.classList.remove("active"), 200);
+        }
+
+        function handlePlayerClick(color) {
+            playerSequence.push(color);
+            const currentLevel = playerSequence.length;
+            if (playerSequence[currentLevel - 1] !== sequence[currentLevel - 1]) {
+                messageBox.classList.add("show");
+                colorButtons.forEach(button => button.style.pointerEvents = "none");
+                return;
+            }
+
+            if (playerSequence.length === sequence.length) {
+                colorButtons.forEach(button => button.style.pointerEvents = "auto");
+                setTimeout(nextLevel, 1000);
+            }
+        }
+
+        function updateLevelCounter() {
+            levelCounter.textContent = `Level: ${level}`;
+        }
+    </script>
+</body>
+</html>
