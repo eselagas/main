@@ -13,6 +13,20 @@
       "size": "4.4 KB",
       "details": "Minor fixes, improved look.",
       "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/App%20Updater"
+    },
+    {
+      "title": "Snake",
+      "version": "1.0",
+      "size": "3.5 KB",
+      "details": "Original Publication, snake game",
+      "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/snake"
+    },
+    {
+      "title": "Simon",
+      "version": "2.0",
+      "size": "6.5 KB",
+      "details": "Simon game, memory game",
+      "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/simon"
     }
   ]
 }
