@@ -204,22 +204,8 @@ table:hover, th:hover, td:hover {
     margin-top: 12px;
     border-radius: 8px;
 }
-
-#prompt {
-  z-index: 20;
-  position: relative;
-  top: 89vh;
-  margin-left: 10px;
-  width: 180vh;
-  background-color: #1b244d;
-  color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  display: none;
-}
 </style>
 <body>
-  <div id="prompt"></div>
   <div id="editorBG" contenteditable="false"></div>
   <div id="editor" contenteditable="true"></div>
   <div class="toolbar" id="textToolbar">
