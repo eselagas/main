@@ -1,10 +1,18 @@
 {
-    "updates": [
-        {
-            "title": "EBF Editor - Dev",
-            "version": "1.1",
-            "size": "28.2 KB",
-            "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/Beta%20editor.html"
-        }
-    ]
+  "updates": [
+    {
+      "title": "EBF Editor",
+      "version": "2.0",
+      "size": "28.8 KB",
+      "details": "Latest stable release, bugs fixed.",
+      "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/EBF%20Editor"
+    },
+    {
+      "title": "App Updater",
+      "version": "1.1",
+      "size": "4 KB",
+      "details": "Minor fixes, improved look.",
+      "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/App%20Updater"
+    }
+  ]
 }
