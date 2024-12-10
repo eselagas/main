@@ -60,6 +60,16 @@
         .error { 
             color: red; 
         }
+
+        .no-updates {
+            background-color: #ffffffbe;
+            margin: 5px 10px;
+            text-align: center; 
+            color: #4e99e9; 
+            font-size: 1.2em; 
+            padding: 20px;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
@@ -71,6 +81,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const updateContainer = document.getElementById('updateContainer');
+            const installedApps = JSON.parse(localStorage.getItem('installedApps')) || [];
 
             const updateUrl = 'https://raw.githubusercontent.com/eselagas/main/refs/heads/main/update_info';
 
@@ -80,8 +91,14 @@
                     updateContainer.innerHTML = ''; // Clear the fetching message
                     
                     const updates = Array.isArray(data.updates) ? data.updates : [data.updates];
+                    const filteredUpdates = updates.filter(update => !installedApps.includes(update.title));
 
-                    updates.forEach(update => {
+                    if (filteredUpdates.length === 0) {
+                        updateContainer.innerHTML = '<p class="no-updates">No updates available. All apps are up to date!</p>';
+                        return;
+                    }
+
+                    filteredUpdates.forEach(update => {
                         const updateElement = document.createElement('div');
                         updateElement.className = 'update';
                         updateElement.innerHTML = `
@@ -90,7 +107,7 @@
                                 <p class="update-version">Version: ${update.version}<br>Size: ${update.size}</p>
                                 <p class="details">${update.details}</p>
                             </div>
-                            <button class="download-btn" onclick="downloadUpdate('${update.updateLocation}', '${update.title}')">Download</button>
+                            <button class="download-btn" onclick="downloadUpdate('${update.updateLocation}', this, '${update.title}')">Download</button>
                         `;
                         updateContainer.appendChild(updateElement);
                     });
@@ -99,7 +116,7 @@
                     updateContainer.innerHTML = '<p class="error">Failed to fetch updates. Please try again later.</p>';
                 });
 
-            window.downloadUpdate = (url, title) => {
+            window.downloadUpdate = (url, button, title) => {
                 fetch(url)
                     .then(res => res.blob())
                     .then(blob => {
@@ -111,6 +128,17 @@
                         document.body.appendChild(a);
                         a.click();
                         window.URL.revokeObjectURL(downloadUrl);
+
+                        // Log installed app
+                        installedApps.push(title);
+                        localStorage.setItem('installedApps', JSON.stringify(installedApps));
+
+                        // Update button style
+                        button.style.backgroundColor = "green";
+                        button.textContent = "Downloaded!";
+
+                        // Remove update from the list
+                        document.querySelector(`.update:has(.update-title:contains('${title}'))`).remove();
                     });
             };
         });
