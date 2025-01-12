@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDA Hymnal</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            overflow-y: auto; /* Allows page scrolling */
+            overflow-x: hidden; /* Hides horizontal scrollbar */
+        }
+        ::-webkit-scrollbar {
+            display: none; /* Hides scrollbar */
+        }
+        .notification {
+            display: none;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            z-index: 1000;
+            font-size: 1em;
+        }
+        input[type="number"] {
+            width: 50px;
+            padding: 5px;
+            font-size: 1em;
+            margin-right: 10px;
+            margin-left: 10px;
+            height: 16px;
+        }
+        button {
+            padding: 5px 10px;
+            font-size: 1em;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #hymnDisplay {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+        }
+        h1 {
+            color: #0349dc;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 1.2em;
+            line-height: 1.8;
+            text-align: center;
+        }
+        .bottom-menu {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 999; /* Ensure it stays above other content */
+        }
+        .bottom-menu.hidden {
+            opacity: 0;
+            transform: translateX(-50%) translateY(100px); /* Move it out of view */
+        }
+        /* Phone Styles */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            input[type="number"] {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            button {
+                width: 100%;
+                margin-top: 10px;
+            }
+            .bottom-menu {
+                flex-direction: column;
+                padding: 15px 20px;
+            }
+            .bottom-menu label {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="notification" id="notification"></div>
+    <div id="hymnDisplay"></div>
+
+    <div class="bottom-menu" id="bottomMenu">
+        <label for="hymnNumber">Hymn number:</label>
+        <input type="number" id="hymnNumber" min="1" max="695">
+        <button onclick="fetchHymn()">Fetch Hymn</button>
+    </div>
+<script>
+    document.addEventListener('keydown', function(event) { 
+        if (event.key === 'Enter') { 
+            fetchHymn();
+        } });
+
+        function fetchHymn() {
+            const hymnNumber = document.getElementById('hymnNumber').value.padStart(3, '0');
+            const url = `https://raw.githubusercontent.com/ariseforgod/adventist_hymnal/refs/heads/master/raw_text/${hymnNumber}.txt`;
+
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error('Hymn not found.');
+                    }
+                })
+                .then(hymnText => {
+                    const lines = hymnText.split('\n');
+                    const hymnTitle = lines[0].includes('–') ? lines[0].split('–')[1].trim() : lines[0].trim();
+                    const hymnBody = lines.slice(2).join('<br>').trim();
+                    document.getElementById('hymnDisplay').innerHTML = `<h1>${hymnTitle}</h1><p>${hymnBody}</p>`;
+                })
+                .catch(error => {
+                    const notification = document.getElementById('notification');
+                    notification.textContent = `${error.message}`;
+                    notification.style.display = 'block';
+                    notification.style.backgroundColor = 'rgb(255, 28, 28)'
+                    setTimeout(() => { notification.style.display = 'none'; }, 2000);
+                });
+        }
+
+        // Check offline status
+        updateStatus();
+        window.addEventListener('online', updateStatus);
+        window.addEventListener('offline', updateStatus);
+
+        function updateStatus() {
+            const notification = document.getElementById('notification');
+            notification.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+            if (navigator.onLine) {
+                notification.style.display = 'none';
+            } else {
+                notification.textContent = 'You are offline';
+                notification.style.display = 'block';
+            }
+        }
+
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', function() {
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            const bottomMenu = document.getElementById('bottomMenu');
+            if (currentScroll > lastScrollTop) {
+                // Scrolling down
+                bottomMenu.classList.add('hidden');
+            } else {
+                // Scrolling up
+                bottomMenu.classList.remove('hidden');
+            }
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // For Mobile or negative scrolling
+        });
+
+        // Make bottom menu visible on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const bottomMenu = document.getElementById('bottomMenu');
+            bottomMenu.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
