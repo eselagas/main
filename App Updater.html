@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="https://ethanselagea.weebly.com/uploads/1/5/0/7/150702136/code_circle_icon_240653.webp">
+    <title>App Store</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --background: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+        }
+
+        .toolbar {
+            background-color: var(--card);
+            padding: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            background: none;
+            color: var(--text);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .nav-button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .nav-button:hover:not(.active) {
+            background-color: #f1f5f9;
+        }
+
+        .settings-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .update-container {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .update {
+            background-color: var(--card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .update:hover {
+            transform: translateY(-2px);
+        }
+
+        .update-info {
+            flex: 1;
+        }
+
+        .update-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .update-version {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .details {
+            color: #475569;
+        }
+
+        .download-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .download-btn:hover {
+            background-color: var(--secondary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--card);
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-option {
+            margin-bottom: 1rem;
+        }
+
+        .no-updates {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .error {
+            color: #ef4444;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .notification-banner {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .notification-banner button {
+            margin-left: 1rem;
+            padding: 0.25rem 0.75rem;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="notificationBanner" class="notification-banner">
+        Enable notifications to stay updated
+        <button onclick="requestNotifications()">Enable</button>
+    </div>
+
+    <div class="toolbar">
+        <div class="nav-buttons">
+            <button class="nav-button active" data-view="new">New Apps</button>
+            <button class="nav-button" data-view="updates">Updates</button>
+        </div>
+        <button class="settings-button" onclick="openSettings()">
+            ⚙️ Settings
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="update-container" id="updateContainer">
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Notification Settings</h2>
+            <div class="settings-option">
+                <input type="checkbox" id="notifyNewApps">
+                <label for="notifyNewApps">Notify for new apps</label>
+            </div>
+            <div class="settings-option">
+                <input type="checkbox" id="notifyUpdates">
+                <label for="notifyUpdates">Notify for updates</label>
+            </div>
+            <button class="download-btn" onclick="saveSettings()">Save</button>
+        </div>
+    </div>
+
+    <script>
+        let currentView = 'new';
+        let notificationSettings = JSON.parse(localStorage.getItem('notificationSettings')) || {
+            newApps: false,
+            updates: false
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadView(currentView);
+            updateSettingsUI();
+            checkNotificationPermission();
+
+            document.querySelectorAll('.nav-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    currentView = button.dataset.view;
+                    loadView(currentView);
+                });
+            });
+        });
+
+        function checkNotificationPermission() {
+            if ('Notification' in window && Notification.permission === "default") {
+                document.getElementById('notificationBanner').style.display = 'block';
+            }
+        }
+
+        function requestNotifications() {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    document.getElementById('notificationBanner').style.display = 'none';
+                }
+            });
+        }
+
+        function loadView(view) {
+            const updateContainer = document.getElementById('updateContainer');
+            const installedApps = JSON.parse(localStorage.getItem('installedApps')) || [];
+
+            const updateUrl = 'https://raw.githubusercontent.com/eselagas/main/refs/heads/main/update_info';
+
+            fetch(updateUrl)
+                .then(response => response.json())
+                .then(data => {
+                    updateContainer.innerHTML = '';
+                    
+                    const updates = Array.isArray(data.updates) ? data.updates : [data.updates];
+                    const filteredUpdates = updates.filter(update => {
+                        const isNewApp = update.type === 'new' || !update.type;
+                        const isUpdate = update.type === 'update';
+                        
+                        if (view === 'new') {
+                            return isNewApp && !installedApps.includes(update.title);
+                        } else {
+                            return isUpdate && installedApps.includes(update.title);
+                        }
+                    });
+
+                    if (filteredUpdates.length === 0) {
+                        updateContainer.innerHTML = `<p class="no-updates">No ${view === 'new' ? 'new apps' : 'updates'} available</p>`;
+                        return;
+                    }
+
+                    filteredUpdates.forEach(update => {
+                        const updateElement = document.createElement('div');
+                        updateElement.className = 'update';
+                        updateElement.innerHTML = `
+                            <div class="update-info">
+                                <p class="update-title">${update.title}</p>
+                                <p class="update-version">Version: ${update.version}<br>Size: ${update.size}</p>
+                                <p class="details">${update.details}</p>
+                            </div>
+                            <button class="download-btn" onclick="downloadUpdate('${update.updateLocation}', this, '${update.title}')">
+                                ${view === 'new' ? 'Download' : 'Update'}
+                            </button>
+                        `;
+                        updateContainer.appendChild(updateElement);
+                    });
+
+                    if (filteredUpdates.length > 0) {
+                        checkAndNotify(view, filteredUpdates.length);
+                    }
+                })
+                .catch(error => {
+                    updateContainer.innerHTML = '<p class="error">Failed to fetch data. Please try again later.</p>';
+                });
+        }
+
+        function checkAndNotify(view, count) {
+            if (
+                Notification.permission === 'granted' && 
+                ((view === 'new' && notificationSettings.newApps) || 
+                (view === 'updates' && notificationSettings.updates))
+            ) {
+                new Notification(`${view === 'new' ? 'New Apps' : 'Updates'} Available`, {
+                    body: `${count} ${view === 'new' ? 'new apps are' : 'updates are'} available`
+                });
+            }
+        }
+
+        function downloadUpdate(url, button, title) {
+            fetch(url)
+                .then(res => res.blob())
+                .then(blob => {
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = downloadUrl;
+                    a.download = `${title}.html`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(downloadUrl);
+
+                    const installedApps = JSON.parse(localStorage.getItem('installedApps')) || [];
+                    if (!installedApps.includes(title)) {
+                        installedApps.push(title);
+                        localStorage.setItem('installedApps', JSON.stringify(installedApps));
+                    }
+
+                    button.style.backgroundColor = "green";
+                    button.textContent = currentView === 'new' ? "Downloaded!" : "Updated!";
+                    
+                    setTimeout(() => {
+                        loadView(currentView);
+                    }, 1000);
+                });
+        }
+
+        function openSettings() {
+            document.getElementById('settingsModal').style.display = 'block';
+        }
+
+        function saveSettings() {
+            notificationSettings = {
+                newApps: document.getElementById('notifyNewApps').checked,
+                updates: document.getElementById('notifyUpdates').checked
+            };
+            localStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function updateSettingsUI() {
+            document.getElementById('notifyNewApps').checked = notificationSettings.newApps;
+            document.getElementById('notifyUpdates').checked = notificationSettings.updates;
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('settingsModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
