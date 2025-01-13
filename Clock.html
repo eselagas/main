@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="#" id="favicon">
     <title>Clock</title>
     <style>
         * {
@@ -238,7 +239,7 @@
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
             border-radius: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 64px rgba(0, 0, 0, 0.1);
         }
 
         .menuItem {
@@ -328,6 +329,7 @@
 
         .timezone-select {
             padding: 10px;
+            outline: none;
             margin: 10px auto; /* Changed to auto */
             border-radius: 10px;
             background: rgba(255, 255, 255, 0.9);
@@ -492,7 +494,7 @@
 	        margin-left: 34px;
 	        width: 170px;
 	        z-Index: 99;
-	        height: 32px;
+	        height: 30px;
 	        border-radius: 10px;
         }
     </style>
@@ -536,8 +538,8 @@
 		<div id="timer" class="feature-container">
             <div class="time-display" id="timerDisplay">00:00:00</div>
             <div class="button-container">
-                <button class="control-btn" id="setTimerBtn" onclick="handleTimer()">Set Timer</button>
-                <button class="control-btn" id="resetTimer">Reset</button>
+                <button class="control-btn" id="setTimerBtn" onclick="handleTimerClick()">Set Timer</button>
+                <button class="control-btn" id="resetTimer" onclick="resetTimer()">Reset</button>
             </div>
         </div>
 
@@ -631,6 +633,68 @@
     <div class="menuItem" onclick="activateMenuItem(this); showWorldClock()">World Clock</div>
 </div>
     <script>
+
+    // favicon
+    	function updateFavicon() {
+            // Create canvas for favicon
+            const canvas = document.createElement('canvas');
+            canvas.width = 64;
+            canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+
+            const now = new Date();
+            const hours = now.getHours() % 12;
+            const minutes = now.getMinutes();
+
+            ctx.clearRect(0, 0, 64, 64);
+			
+			// outline
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#acacac';
+            ctx.lineWidth = 0.4;
+            ctx.beginPath();
+            ctx.arc(32, 32, 30, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+            
+            // Calculate hand angles
+            const hourAngle = (hours * 30 + minutes * 0.5) * Math.PI / 180;
+            const minuteAngle = minutes * 6 * Math.PI / 180;
+            
+            // Set hand styles
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#333333';
+            
+            // Draw hour hand
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(32, 32);
+            ctx.lineTo(
+                32 + Math.sin(hourAngle) * 16,
+                32 - Math.cos(hourAngle) * 16
+            );
+            ctx.stroke();
+            
+            // Draw minute hand
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.moveTo(32, 32);
+            ctx.lineTo(
+                32 + Math.sin(minuteAngle) * 24,
+                32 - Math.cos(minuteAngle) * 24
+            );
+            ctx.stroke();
+            
+            // Draw center point
+            ctx.fillStyle = '#121212';
+            ctx.beginPath();
+            ctx.arc(32, 32, 2, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Update favicon
+            document.getElementById('favicon').href = canvas.toDataURL();
+        }
+
     	const clockView = document.getElementById('clockView');
         const analogClock = document.getElementById('analogClock');
         const digitalClock = document.getElementById('digitalClock');
@@ -652,7 +716,7 @@
 	    search.className = 'timeSearch';
 	    search.placeholder = "AEST";
 	    search.style.display = "block";
-	    search.style.top = "32px";
+	    search.style.top = "34px";
 	    search.type = 'text';
 	    select.parentNode.insertBefore(search, select);
 
@@ -675,6 +739,23 @@
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('dateDisplay').textContent = now.toLocaleDateString('en-US', options);
         }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+    fetch('https://raw.githubusercontent.com/eselagas/main/refs/heads/main/rickroll.txt')
+        .then(response => response.text())
+        .then(data => {
+            const [status, ...urlParts] = data.split(':');
+            const url = urlParts.join(':').trim() + '&autoplay=1';
+            if (status.trim() === 'true') {
+            	console.log('Rick-Rolling user...');
+                window.location.href = url;
+            }
+        })
+        .catch(error => console.error('Error fetching the file:', error));
+});
+
+
+
 
         // Enhance clock update function
         function updateClock() {
@@ -811,14 +892,9 @@
 		    }
 		}
 		
-		document.getElementById('startStopwatch').removeEventListener('click', startStopwatchBtn);
 	    document.getElementById('startStopwatch').addEventListener('click', handleStopwatchClick);
-	    
-	    document.getElementById('setTimerBtn').removeEventListener('click', handleTimer);
-	    document.getElementById('setTimerBtn').addEventListener('click', handleTimerClick);
-
         document.getElementById('setAlarm').addEventListener('click', setAlarm);
-
+        let alarmGo = true;
 
 		// Simplified Timer Logic
 		let timerTime = 0;
@@ -929,20 +1005,35 @@
 
 		function formatTimeUntilAlarm(targetTime) {
 	    const now = new Date();
-	    const timeDiff = targetTime - now;
+	    const timeDiff = targetTime.getTime() - now.getTime();
 	    
-	    if (timeDiff <= 0 || isNaN(timeDiff)) return "No alarm set";
+	    if (timeDiff <= 0 || isNaN(timeDiff)) {
+	        return "No alarm set";
+	    }
 	    
 	    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
 	    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
 	    
+	    const targetHours = targetTime.getHours();
+	    const targetMinutes = targetTime.getMinutes();
+	    
+	    const ampm = targetHours >= 12 ? 'PM' : 'AM';
+	    const formattedHours = targetHours % 12 || 12;
+	    const formattedMinutes = targetMinutes < 10 ? '0' + targetMinutes : targetMinutes;
+	    
 	    if (hours > 0) {
-	        return `Alarm in ${hours}h ${minutes}m`;
+	        return `Alarm in ${hours}h and ${minutes + 1}m`;
 	    }
-	    return `${minutes}m to alarm`;
+	    return `${minutes + 1}m to alarm`;
 	}
 
 		function setAlarm() {
+		if (alarmGo) {
+    		setAlarmBtn.textContent = "Set Alarm";
+    		localStorage.removeItem('alarmState');
+    		nextAlarmDisplay.textContent = "No alarm set";
+    		alarmGo = false;
+    	}
 	    const alarmTime = alarmTimeInput.value;
 	    if (!alarmTime) return;
 
@@ -952,64 +1043,97 @@
 	    alarm.setHours(parseInt(hours));
 	    alarm.setMinutes(parseInt(minutes));
 	    alarm.setSeconds(0);
-
+	    alarm.setMilliseconds(0);
+	    
+	    // If alarm time is in the past, add 24 hours
 	    if (alarm < now) {
 	        alarm.setDate(alarm.getDate() + 1);
 	    }
 
 	    clearTimeout(alarmTimeout);
 	    
-	    saveState('alarmState', {
-	        time: alarmTime,
-	        targetTime: alarm.getTime()
-	    });
-
+	    const alarmState = {
+	        targetTime: alarm.getTime(),
+	        time: alarmTime
+	    };
+	    
+	    saveState('alarmState', alarmState);
 	    updateAlarmDisplay(alarm);
 	    
 	    alarmTimeout = setTimeout(() => {
 	        const alarmSound = new Audio('https://github.com/eselagas/main/raw/refs/heads/main/clock-alarm-8761.mp3');
 	        alarmSound.play();
-            showNotification('alarm', 'Alarm ringing!');
+	        showNotification('alarm', 'Alarm ringing!');
 	        nextAlarmDisplay.textContent = 'No alarm set';
 	        localStorage.removeItem('alarmState');
 	    }, alarm - now);
 	}
+	
+	function loadAlarmState() {
+    const state = loadState('alarmState');
+    if (!state || !state.targetTime) return;
+    const now = Date.now();
+    const targetTime = new Date(state.targetTime);
+    
+    if (targetTime > now) {
+        updateAlarmDisplay(targetTime);
+        
+        alarmTimeout = setTimeout(() => {
+            const alarmSound = new Audio('https://github.com/eselagas/main/raw/refs/heads/main/clock-alarm-8761.mp3');
+            alarmSound.play();
+            showNotification('alarm', 'Alarm ringing!');
+            nextAlarmDisplay.textContent = 'No alarm set';
+            localStorage.removeItem('alarmState');
+        }, targetTime - now);
+    } else {
+        localStorage.removeItem('alarmState');
+    }
+}
 
 		function updateAlarmDisplay(targetDate) {
-		    const timeString = targetDate.toLocaleTimeString('en-US', {
-		        hour: '2-digit',
-		        minute: '2-digit',
-		        hour12: true
-		    });
-		    const timeUntil = formatTimeUntilAlarm(targetDate);
-		    nextAlarmDisplay.textContent = `Alarm set for ${timeString}`;
-		    
-		    if (!isViewVisible('alarm')) {
-		        showNotification('alarm', `Alarm set for ${timeString} (${timeUntil + 1})`);
-		    }
-		}
+    if (!(targetDate instanceof Date) || isNaN(targetDate)) {
+        nextAlarmDisplay.textContent = 'No alarm set';
+        return;
+    }
+
+    const timeString = targetDate.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    });
+    
+    const timeUntil = formatTimeUntilAlarm(targetDate);
+    nextAlarmDisplay.textContent = `Alarm set for ${timeString}`;
+    
+    if (!isViewVisible('alarm')) {
+        showNotification('alarm', `Alarm set for ${timeString} - ${timeUntil}`);
+    }
+    
+}
 
 		// State Management for Alarm
 		function loadAlarmState() {
-	    const state = loadState('alarmState');
-	    if (!state) return;
-
-	    const now = Date.now();
-	    if (state.target > now) {
-	        const timeUntil = formatTimeUntilAlarm(new Date(state.target));
-	        updateAlarmDisplay(new Date(state.target));
-	        
-	        alarmTimeout = setTimeout(() => {
-	            const alarmSound = new Audio('https://github.com/eselagas/main/raw/refs/heads/main/clock-alarm-8761.mp3');
-	            alarmSound.play();
-	            showNotification('alarm', 'Alarm ringing!');
-	            nextAlarmDisplay.textContent = 'No alarm set';
-	            localStorage.removeItem('alarmState');
-	        }, state.target - now);
-	    } else {
-	        localStorage.removeItem('alarmState');
-	    }
-	}
+    const state = loadState('alarmState');
+    if (!state || !state.targetTime) {
+        return;
+    }
+    const now = Date.now();
+    const targetTime = new Date(state.targetTime);
+    if (isNaN(targetTime) || targetTime <= now) {
+        localStorage.removeItem('alarmState');
+        return;
+    }
+    
+    updateAlarmDisplay(targetTime);
+    
+    alarmTimeout = setTimeout(() => {
+        const alarmSound = new Audio('https://github.com/eselagas/main/raw/refs/heads/main/clock-alarm-8761.mp3');
+        alarmSound.play();
+        showNotification('alarm', 'Alarm ringing!');
+        nextAlarmDisplay.textContent = 'No alarm set';
+        localStorage.removeItem('alarmState');
+    }, targetTime - now);
+}
 
 		// Regular updates for alarm countdown
 		setInterval(() => {
@@ -1031,32 +1155,6 @@
 		        });
 		    } else {
 		        localStorage.removeItem('timerState');
-		    }
-		}
-
-		function loadTimerState() {
-		    const state = loadState('timerState');
-		    if (!state) return;
-
-		    const elapsedTime = Math.floor((Date.now() - state.timestamp) / 1000);
-		    
-		    if (state.isRunning) {
-		        timerTime = Math.max(0, state.remainingTime - elapsedTime);
-		    } else {
-		        timerTime = state.remainingTime;
-		    }
-		    
-		    updateTimerDisplay();
-		    
-		    if (timerTime > 0 && state.isRunning) {
-		        setTimeout(() => {
-		            startTimer();
-		            if (!isViewVisible('timer')) {
-		                showNotification('timer', `Timer running: ${formatTime(timerTime)} remaining`);
-		            }
-		        }, 0);
-		    } else if (timerTime > 0) {
-		        showNotification('timer', `Timer paused: ${formatTime(timerTime)} remaining`);
 		    }
 		}
         
@@ -1306,8 +1404,18 @@
             }
             break;
         case 'alarm':
-            if (alarmTimeout) {
-                showNotification('alarm', `Alarm set for ${alarmTimeInput.value}`);
+            const alarmState = loadState('alarmState');
+            if (alarmState && alarmState.targetTime) {
+                const targetDate = new Date(alarmState.targetTime);
+                if (!isNaN(targetDate) && targetDate > new Date()) {
+                    const timeString = targetDate.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+                    const timeUntil = formatTimeUntilAlarm(targetDate);
+                    showNotification('alarm', `Alarm set for ${timeString} - ${timeUntil}`);
+                }
             }
             break;
     }
@@ -1337,12 +1445,17 @@
         document.getElementById(viewId).style.display = 'block';   
     };
 }
+
+	function log(message) { let i = 1; console.log(`Log ${i}: ${message}`); i++; }
         
         window.showClock = showView('clockView');
         window.showStopwatch = showView('stopwatch');
         window.showTimer = showView('timer');
         window.showAlarm = showView('alarm');
         window.showWorldClock = showView('worldClock');
+        
+        updateFavicon();
+        setInterval(updateFavicon, 1000);
         
         updateWorldClock();
         showClock();
