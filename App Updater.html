@@ -255,7 +255,7 @@
 
         function checkNotificationPermission() {
             if ('Notification' in window && Notification.permission === "default") {
-                document.getElementById('notificationBanner').style.display = 'block';
+                document.getElementById('notificationBanner').style.display = 'none';
             }
         }
 
@@ -268,57 +268,54 @@
         }
 
         function loadView(view) {
-            const updateContainer = document.getElementById('updateContainer');
-            const installedApps = JSON.parse(localStorage.getItem('installedApps')) || [];
+        const updateContainer = document.getElementById('updateContainer');
+        const installedApps = JSON.parse(localStorage.getItem('installedApps')) || [];
 
-            const updateUrl = 'https://raw.githubusercontent.com/eselagas/main/refs/heads/main/update_info';
+        const updateUrl = 'https://raw.githubusercontent.com/eselagas/main/refs/heads/main/update_info';
 
-            fetch(updateUrl)
-                .then(response => response.json())
-                .then(data => {
-                    updateContainer.innerHTML = '';
-                    
-                    const updates = Array.isArray(data.updates) ? data.updates : [data.updates];
-                    const filteredUpdates = updates.filter(update => {
-                        const isNewApp = update.type === 'new' || !update.type;
-                        const isUpdate = update.type === 'update';
-                        
-                        if (view === 'new') {
-                            return isNewApp && !installedApps.includes(update.title);
-                        } else {
-                            return isUpdate && installedApps.includes(update.title);
-                        }
-                    });
-
-                    if (filteredUpdates.length === 0) {
-                        updateContainer.innerHTML = `<p class="no-updates">No ${view === 'new' ? 'new apps' : 'updates'} available</p>`;
-                        return;
+        fetch(updateUrl)
+            .then(response => response.json())
+            .then(data => {
+                updateContainer.innerHTML = '';
+                
+                const updates = Array.isArray(data.updates) ? data.updates : [data.updates];
+                const filteredUpdates = updates.filter(update => {
+                    if (view === 'new') {
+                        return update.type === 'new';
+                    } else {
+                        return update.type === 'update';
                     }
-
-                    filteredUpdates.forEach(update => {
-                        const updateElement = document.createElement('div');
-                        updateElement.className = 'update';
-                        updateElement.innerHTML = `
-                            <div class="update-info">
-                                <p class="update-title">${update.title}</p>
-                                <p class="update-version">Version: ${update.version}<br>Size: ${update.size}</p>
-                                <p class="details">${update.details}</p>
-                            </div>
-                            <button class="download-btn" onclick="downloadUpdate('${update.updateLocation}', this, '${update.title}')">
-                                ${view === 'new' ? 'Download' : 'Update'}
-                            </button>
-                        `;
-                        updateContainer.appendChild(updateElement);
-                    });
-
-                    if (filteredUpdates.length > 0) {
-                        checkAndNotify(view, filteredUpdates.length);
-                    }
-                })
-                .catch(error => {
-                    updateContainer.innerHTML = '<p class="error">Failed to fetch data. Please try again later.</p>';
                 });
-        }
+
+                if (filteredUpdates.length === 0) {
+                    updateContainer.innerHTML = `<p class="no-updates">No ${view === 'new' ? 'new apps' : 'updates'} available</p>`;
+                    return;
+                }
+
+                filteredUpdates.forEach(update => {
+                    const updateElement = document.createElement('div');
+                    updateElement.className = 'update';
+                    updateElement.innerHTML = `
+                        <div class="update-info">
+                            <p class="update-title">${update.title}</p>
+                            <p class="update-version">Version: ${update.version}<br>Size: ${update.size}</p>
+                            <p class="details">${update.details}</p>
+                        </div>
+                        <button class="download-btn" onclick="downloadUpdate('${update.updateLocation}', this, '${update.title}')">
+                            ${view === 'new' ? 'Download' : 'Update'}
+                        </button>
+                    `;
+                    updateContainer.appendChild(updateElement);
+                });
+
+                if (filteredUpdates.length > 0) {
+                    checkAndNotify(view, filteredUpdates.length);
+                }
+            })
+            .catch(error => {
+                updateContainer.innerHTML = '<p class="error">Failed to fetch data. Please try again later.</p>';
+            });
+    }
 
         function checkAndNotify(view, count) {
             if (
