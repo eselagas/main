@@ -9,14 +9,6 @@
       "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/App%20Updater.html"
     },
     {
-      "title": "Clock",
-      "version": "2.3",
-      "size": "44.2 KB",
-      "details": "The official Clock app by Ethan. Still working on alarm and feature optimisation, but otherwise, it is ready for use!\n\nPermissions:\n - Local Storage",
-      "type": "new",
-      "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/Clock.html"
-    },
-    {
       "title": "SDA Hymnal",
       "version": "1.2",
       "size": "6.6 KB",
