@@ -196,8 +196,12 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
 
-        .hour { width: 35%; height: 4px; left: 15%; }
-        .minute { width: 45%; height: 3px; left: 5%; }
+        .hour { width: 35%; height: 4px; left: 15%;left: 5%;
+            transition: none;
+            transform-origin: 100%; }
+        .minute { width: 45%; height: 3px; left: 5%;left: 5%;
+            transition: none;
+            transform-origin: 100%; }
         .second {
             width: 45%;
             height: 2px;
