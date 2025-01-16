@@ -180,56 +180,33 @@
         }
 
 	.hand {
-	    position: absolute;
-	    transform-origin: 50% 50%;
-	    top: 50%;
-	    left: 50%;
-	    background: #666;
-	    border-radius: 5px;
-	    transition: transform 0.1s cubic-bezier(0.4, 2.08, 0.55, 0.44);
-	}
+            position: absolute;
+            background: #666;
+            border-radius: 5px;
+            transform-origin: 100%;
+            transition: transform 0.1s cubic-bezier(0.4, 2.08, 0.55, 0.44);
+        }
 	
 	/* Hour hand */
-	.hour {
-	    width: 35%;
-	    height: 4px;
-	    margin-left: -17.5%;  /* Half of width */
-	    background: #666;
-	    border-radius: 2px;
-	}
-	
-	/* Minute hand */
-	.minute {
-	    width: 45%;
-	    height: 3px;
-	    margin-left: -22.5%;  /* Half of width */
-	    background: #666;
-	    border-radius: 1.5px;
-	}
-	
-	/* Second hand */
-	.second {
-	    width: 45%;
-	    height: 2px;
-	    margin-left: -22.5%;  /* Half of width */
-	    background: #999;
-	    border-radius: 1px;
-	    transition: none;
-	}
-	
-	/* Center point */
+	.hour { width: 35%; height: 4px; left: 15%; }
+        .minute { width: 45%; height: 3px; left: 5%; }
+        .second {
+            width: 45%;
+            height: 2px;
+            background: #999;
+            left: 5%;
+            transition: none;
+            transform-origin: 100%;
+        }
+
 	#point {
-	    position: absolute;
-	    width: 12px;
-	    height: 12px;
-	    background: linear-gradient(135deg, #666, #333);
-	    border-radius: 50%;
-	    top: 50%;
-	    left: 50%;
-	    transform: translate(-50%, -50%);
-	    z-index: 10;
-	    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-	}
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #666, #333);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
 
         .marker {
             position: fixed;
