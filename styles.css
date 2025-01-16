@@ -325,17 +325,26 @@
         }
 
         .timezone-select {
-            padding: 10px;
-            outline: none;
-            margin: 10px auto; /* Changed to auto */
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            width: 80%; /* Added */
-            display: block; /* Added */
-        }
+	    padding: 12px 35px 12px 15px;
+	    outline: none;
+	    margin: 10px auto;
+	    border-radius: 15px;
+	    background: rgba(255, 255, 255, 0.9);
+	    color: #333;
+	    border: 1px solid rgba(0, 0, 0, 0.1);
+	    transition: all 0.3s ease;
+	    width: 80%;
+	    display: block;
+	    font-size: 16px; /* Prevents auto-zoom on iOS */
+	    -webkit-appearance: none;
+	    -moz-appearance: none;
+	    appearance: none;
+	    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+	    background-repeat: no-repeat;
+	    background-position: right 10px center;
+	    background-size: 16px;
+	    cursor: pointer;
+	}
 
         .timezone-select:hover {
             transform: translateY(-2px);
@@ -502,6 +511,34 @@
 	        min-height: 100svh;
 	    }
 
+	    .timezone-select {
+	        width: 90%;
+	        max-width: 300px;
+	        padding: 10px 35px 10px 12px;
+	        font-size: 14px;
+	    }
+	
+	    /* Improve the native select menu appearance on mobile */
+	    .timezone-select:focus {
+	        border-color: rgba(0, 0, 0, 0.2);
+	        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	    }
+	
+	    /* Custom styling for Android */
+	    .timezone-select::-webkit-listbox {
+	        background-color: rgba(255, 255, 255, 0.95);
+	        border-radius: 10px;
+	        max-height: 40vh;
+	    }
+		
+		@supports (-webkit-touch-callout: none) {
+	        .timezone-select {
+	            background-color: rgba(255, 255, 255, 0.95);
+	            backdrop-filter: blur(10px);
+	            -webkit-backdrop-filter: blur(10px);
+	        }
+				
+
 	    .container {
 	        gap: 15px;
 	        padding-top: 40px;
@@ -608,15 +645,14 @@
 		}
 
 		@media (hover: none) {
-        .menuItem:hover, .control-btn:hover {
-            transform: none;
-        }
-
-        .menuItem:active, .control-btn:active {
-            transform: scale(1.05);
-        }
-    }
-}
+	        .menuItem:hover, .control-btn:hover {
+	            transform: none;
+	        }
+	
+	        .menuItem:active, .control-btn:active {
+	            transform: scale(1.05);
+	        }
+	    }
 
 @media (prefers-color-scheme: dark) {
     :root {
