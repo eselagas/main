@@ -12,30 +12,6 @@
         const timezoneSelect = document.getElementById('timezone');
         const worldTimeDisplay = document.getElementById('worldTime');
         
-        document.addEventListener('DOMContentLoaded', function() {
-	    var select = document.getElementById('timezone');
-	    var selectClone = select.cloneNode(true);
-	    var search = document.createElement('input');
-	    search.className = 'timeSearch';
-	    search.placeholder = "AEST";
-	    search.style.display = "block";
-	    search.style.top = "34px";
-	    search.type = 'text';
-	    select.parentNode.insertBefore(search, select);
-
-	    search.addEventListener('input', function() {
-	        var filter = search.value.toLowerCase();
-	        select.innerHTML = '';
-	        for (var i = 0; i < selectClone.options.length; i++) {
-	            var option = selectClone.options[i];
-	            if (option.text.toLowerCase().includes(filter)) {
-	                select.appendChild(option.cloneNode(true));
-	            }
-	        }
-	    });
-	});
-
-        
         // Update date display
         function updateDate() {
             const now = new Date();
