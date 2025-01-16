@@ -653,6 +653,7 @@
     body {
         background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
         color: #fff;
+	text-color: #fff;
     }
 
     #analogClock {
