@@ -653,7 +653,6 @@
     body {
         background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
         color: #fff;
-	text-color: #fff;
     }
 
     #analogClock {
@@ -662,6 +661,10 @@
         box-shadow: 
             0 10px 30px rgba(0, 0, 0, 0.3),
             inset 0 0 30px rgba(60, 60, 60, 0.5);
+    }
+
+    #digitalClock {
+	color: #a0a0a0;
     }
 
     .hand {
