@@ -138,7 +138,7 @@
 	    position: relative;
 	    width: min(300px, 90vw);
 	    height: min(300px, 90vw);
-	    margin: 20px 0;
+	    margin: 30px 0;
 	    transition: transform 0.3s ease;
 	}
 
