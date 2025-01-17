@@ -710,8 +710,8 @@
     }
 
     .feature-container {
-        background: rgba(28, 28, 28, 0.95);
-        color: rgb(38 38 38 / 95%);
+        background: rgb(38 38 38 / 95%);
+        color: #fff;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
 
