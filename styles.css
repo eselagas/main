@@ -650,66 +650,112 @@
     }
 
     body {
-        background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
-        color: #a0a0a0;
+        background: linear-gradient(135deg, #121212, #1a1a1a);
+        color: #e0e0e0;
     }
 
     #analogClock {
-        background: rgba(40, 40, 40, 0.9);
-        border: 3px solid rgba(60, 60, 60, 0.8);
+        background: rgba(28, 28, 28, 0.95);
+        border: 3px solid rgba(45, 45, 45, 0.9);
         box-shadow: 
-            0 10px 30px rgba(0, 0, 0, 0.3),
-            inset 0 0 30px rgba(60, 60, 60, 0.5);
+            0 10px 30px rgba(0, 0, 0, 0.4),
+            inset 0 0 30px rgba(45, 45, 45, 0.6);
     }
 
-#digitalClock {
-text-color: #a0a0a0;
-}
+    #digitalClock {
+        color: #e0e0e0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
 
     .hand {
-        background: #bebebe;
+        background: #d4d4d4;
     }
 
     .second {
-        background: #666;
+        background: #787878;
     }
 
     #point {
-        background: linear-gradient(135deg, #bebebe, #888);
+        background: linear-gradient(135deg, #d4d4d4, #a0a0a0);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     }
 
     .marker {
-        background: rgba(190, 190, 190, 0.6);
+        background: rgba(212, 212, 212, 0.7);
     }
 
     .sub-marker {
-        background: rgba(150, 150, 150, 0.5);
+        background: rgba(180, 180, 180, 0.6);
     }
 
     #menu {
-        background: rgba(40, 40, 40, 0.8);
+        background: rgba(28, 28, 28, 0.9);
+        box-shadow: 0 8px 64px rgba(0, 0, 0, 0.2);
     }
 
     .menuItem {
-        background: rgba(60, 60, 60, 0.8);
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(40, 40, 40, 0.95);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .menuItem.active {
-        background: #fff;
-        color: #333;
+        background: #e0e0e0;
+        color: #121212;
+    }
+
+    .menuItem:hover {
+        background: #404040;
+        color: #ffffff;
     }
 
     .feature-container {
-        background: rgba(40, 40, 40, 0.9);
-        color: #fff;
+        background: rgba(28, 28, 28, 0.95);
+        color: #e0e0e0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
 
     .notification-banner {
-        background: rgba(40, 40, 40, 0.97);
-        color: #fff;
-        border: 1px solid rgba(60, 60, 60, 0.2);
+        background: rgba(28, 28, 28, 0.97);
+        color: #e0e0e0;
+        border: 1px solid rgba(45, 45, 45, 0.3);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .control-btn {
+        background: #404040;
+        color: #e0e0e0;
+    }
+
+    .control-btn:hover {
+        background: #505050;
+    }
+
+    .timer-unit {
+        background: rgba(40, 40, 40, 0.95);
+    }
+
+    .timer-unit button {
+        color: #e0e0e0;
+    }
+
+    .timer-unit span {
+        color: #a0a0a0;
+    }
+
+    .timezone-select {
+        background-color: rgba(40, 40, 40, 0.95);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .timezone-select:hover {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .timezone-select option {
+        background: #282828;
+        color: #e0e0e0;
     }
 }
 
