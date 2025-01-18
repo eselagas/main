@@ -526,7 +526,7 @@
 	            backdrop-filter: blur(10px);
 	            -webkit-backdrop-filter: blur(10px);
 	        }
-		}
+	    }
 				
 
 	    .container {
@@ -535,7 +535,7 @@
 	    }
 
 	    #digitalClock {
-	        font-size: 3em; /* Smaller font size for mobile */
+	        font-size: 3.2em; /* Smaller font size for mobile */
 	        margin-bottom: 15px;
 	    }
 
@@ -640,6 +640,9 @@
 	        .menuItem:hover, .control-btn:hover {
 	            transform: none;
 	        }
+		.menuItem.active:hover {
+			transform: none;
+		}
 	
 	        .menuItem:active, .control-btn:active {
 	            transform: scale(1.05);
