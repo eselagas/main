@@ -73,7 +73,6 @@
         } else {
             marker.className = 'sub-marker';
             marker.style.height = '2%';
-            marker.style.top = '-3px'; // Adjust the size for minute markers
         }
         marker.style.transform = `rotate(${i * 6}deg)`;
         marker.style.opacity = '0';
