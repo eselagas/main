@@ -225,6 +225,7 @@
             background: rgba(151, 151, 151, 0.5);
             border-radius: 3px;
             transform-origin: 50% 150px;
+	    top: 0px;
         }
 
         #menu {
@@ -658,7 +659,7 @@
         border: none;
         box-shadow: 
             0 10px 30px rgba(0, 0, 0, 0.4),
-            inset 0 0 30px rgba(45, 45, 45, 0.6);
+            inset 0 0 30px rgb(255 255 255 / 45%)
     }
 
     #digitalClock {
