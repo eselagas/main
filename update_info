@@ -23,6 +23,14 @@
       "details": "This app helps you keep track of your browser's Local Storage. It shows you live data as it is being saved, and you can even edit it (if you know what you're doing. This could cause sites to malfunction)!\n\nPermissions:\n - Local Storage",
       "type": "new",
       "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/LS%20Manager.html"
+    },
+    {
+      "title": "Clock",
+      "version": "6.0",
+      "size": "9 KB",
+      "details": "Saved script and style code on GitHub to minimise app size, improved styling by adding dark mode support and, finally, phone support! This is the latest stable version of the Clock app. Please install!",
+      "type": "update",
+      "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/App%20Updates/Clock.html"
     }
   ]
 }
