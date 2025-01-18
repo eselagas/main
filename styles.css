@@ -620,11 +620,13 @@
 	    .hour { 
         	width: 30%;
         	height: 4px;
+		left: 50px;
 	    }
 	    
 	    .minute { 
 	        width: 40%;
 	        height: 3px;
+		left: 25px;
 	    }
 	    
 	    .second { 
