@@ -604,7 +604,7 @@
 	    /* Adjust marker positions for smaller clock */
 	    .marker {
 	        height: 15px;
-	        bottom: 232.5px; /* Adjusted for smaller clock */
+	        bottom: 235px; /* Adjusted for smaller clock */
 	    }
 
 	    .sub-marker {
