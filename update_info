@@ -31,6 +31,14 @@
       "details": "Saved script and style code on GitHub to minimise app size, improved styling by adding dark mode support and, finally, phone support! This is the latest stable version of the Clock app. Please install!",
       "type": "update",
       "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/App%20Updates/Clock.html"
+    },
+    {
+      "title": "App Updater",
+      "version": "2.0",
+      "size": "13 KB",
+      "details": "Slightly enhanced version of the App Updater, with animations and settings. Please suggest additional settings as I couldn't think of any.\n\nThe other version still works, but this is the updated version with some improvements.",
+      "type": "update",
+      "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/App%20Updates/App Updater.html"
     }
   ]
 }
