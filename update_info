@@ -31,14 +31,6 @@
       "details": "Saved script and style code on GitHub to minimise app size, improved styling by adding dark mode support and, finally, phone support! This is the latest stable version of the Clock app. Please install!",
       "type": "update",
       "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/App%20Updates/Clock.html"
-    },
-    {
-      "title": "Clock",
-      "version": "6.2",
-      "size": "12",
-      "details": "Testing this app - demo although upgraded!",
-      "type": "update",
-      "updateLocation": "https://raw.githubusercontent.com/eselagas/main/refs/heads/main/App%20Updates/Password Generator.html"
     }
   ]
 }
