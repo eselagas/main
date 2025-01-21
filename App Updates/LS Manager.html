@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Local Storage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f5;
+        }
+        #app {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 80%;
+            max-width: 800px;
+            height: 80%;
+            overflow-y: auto;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #dc3545;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #c82333;
+        }
+        #storage-items {
+            margin-top: 20px;
+            text-align: left;
+            overflow-y: auto;
+        }
+        .storage-item {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+        .storage-key {
+            position: relative;
+            font-weight: bold;
+            bottom: 3px;
+        }
+        .storage-value {
+            flex: 1;
+        }
+        .underline {
+            text-decoration: underline;
+        }
+        .editable {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: calc(100% - 20px);
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Manage Local Storage</h1>
+        <button onclick="clearAllLocalStorage()">Clear All</button>
+        <div id="storage-items"></div>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        let editingKey = null;
+
+        function displayLocalStorageItems() {
+            const storageItemsContainer = document.getElementById('storage-items');
+            storageItemsContainer.innerHTML = '';
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                let value = localStorage.getItem(key);
+
+                value = value.substring(2, value.length - 2);
+                value = value.replace(/"/g, '');
+
+                // Create a formatted representation
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'storage-item';
+                itemDiv.dataset.key = key;
+                const valueArray = value.split(',');
+
+                itemDiv.innerHTML = `<strong class="storage-key" contenteditable="true">${key}:</strong>`;
+                valueArray.forEach((item) => {
+                    const [subKey, subValue] = item.split(':');
+                    if (subValue) {
+                        itemDiv.innerHTML += `<div class="storage-value"><span class="underline">${subKey.trim()}</span>: <span contenteditable="true" class="editable">${subValue}</span></div>`;
+                    } else {
+                        itemDiv.innerHTML += `<div class="storage-value"><span class="underline editable" contenteditable="true">${subKey}</span></div>`;
+                    }
+                });
+                itemDiv.innerHTML += `<button class="delete-btn" onclick="deleteOrUpdateItem('${key}', this)">Delete</button>`;
+
+                storageItemsContainer.appendChild(itemDiv);
+            }
+        }
+
+        function clearAllLocalStorage() {
+            localStorage.clear();
+            displayLocalStorageItems();
+            document.getElementById('message').innerText = 'All local storage items have been cleared!';
+        }
+
+        function deleteOrUpdateItem(key, button) {
+            if (button.innerText === 'Delete') {
+                localStorage.removeItem(key);
+                editingKey = null;
+                displayLocalStorageItems();
+                document.getElementById('message').innerText = `Item '${key}' has been deleted!`;
+            } else if (button.innerText === 'Update') {
+                const newKey = button.parentElement.querySelector('.storage-key').innerText.slice(0, -1);
+                const newValues = Array.from(button.parentElement.querySelectorAll('.editable')).map(el => el.innerText);
+                const headers = Array.from(button.parentElement.querySelectorAll('.underline')).map(el => el.innerText);
+
+                // Create a new value string
+                let newValueString = [];
+                for (let i = 0; i < newValues.length; i++) {
+                    if (newValues[i].includes(':')) {
+                        newValueString.push(newValues[i]);
+                    } else {
+                        newValueString.push(`${headers[i]}:${newValues[i]}`);
+                    }
+                }
+
+                // Update localStorage with new key and value
+                localStorage.removeItem(key);
+                localStorage.setItem(newKey, JSON.stringify(newValueString));
+
+                editingKey = null;
+                displayLocalStorageItems();
+                document.getElementById('message').innerText = `Item '${newKey}' has been updated!`;
+            }
+        }
+
+        document.getElementById('storage-items').addEventListener('click', (event) => {
+            if (event.target.classList.contains('.editable')) {
+                editingKey = event.target.closest('.storage-item').dataset.key;
+            }
+        });
+
+        document.getElementById('storage-items').addEventListener('input', (event) => {
+            if (event.target.contentEditable === 'true') {
+                const button = event.target.closest('.storage-item').querySelector('button');
+                button.innerText = 'Update';
+                button.style.backgroundColor = '#28a745';
+                button.style.color = 'white';
+            }
+        });
+
+        displayLocalStorageItems();
+    </script>
+</body>
+</html>
