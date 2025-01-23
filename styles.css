@@ -391,6 +391,12 @@
             width: 400px;
         }
 
+	.modal-buttons {
+	    display: flex;
+	    justify-content: center;
+	    gap: 10px;
+	}
+
         @keyframes slideIn {
             from {
                 transform: translateY(-20px);
@@ -467,15 +473,6 @@
             margin-top: 10px;
             font-weight: 300;
             text-align: center;
-        }
-
-        /* Weather icons (placeholder) */
-        #weatherIcon {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 1.5em;
-            color: #666;
         }
         
         /* Modifications */
@@ -601,21 +598,20 @@
 	        margin: 10px;
 	    }
 
-	    /* Adjust marker positions for smaller clock */
 	    .marker {
 	        height: 15px;
-	        bottom: 235px; /* Adjusted for smaller clock */
+	        bottom: 235px;
 	    }
 
 	    .sub-marker {
-	        bottom: 237.5px; /* Adjusted for smaller clock */
+	        bottom: 237.5px;
 	        height: 8px;
     		width: 2px;
 	    }
 	    
 	    .marker, .sub-marker {
         	transform-origin: 50% 125px;
-    	}
+    	    }
 
 	    .hour { 
         	width: 30%;
