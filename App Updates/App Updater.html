@@ -95,12 +95,6 @@
             background-color: var(--secondary);
         }
 
-        p {
-            padding-right: 30px;
-            margin-top: 0.8rem;
-            color: #475569;
-        }
-
         .modal {
             display: none;
             position: fixed;
@@ -183,9 +177,9 @@
                         ? finalUpdates.map(update => `
                             <div class="update">
                                 <div>
-                                    <p>${update.title}</p>
+                                    <h4 style="margin-bottom: 2px;">${update.title}</h4>
                                     <p>Version: ${update.version} | Size: ${update.size}</p>
-                                    <p>${update.details}</p>
+                                    <p style="color: #475569; margin-top: 0.8rem; padding-right: 30px;">${update.details}</p>
                                 </div>
                                 <button class="download-btn" 
                                     onclick="downloadUpdate('${update.updateLocation}', '${update.title}')">
