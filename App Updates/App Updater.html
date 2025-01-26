@@ -128,6 +128,15 @@
 		    font-weight: 500;
 		    transition: background-color 0.2s;
 		}
+		
+		#save_settings {
+			padding: 0.75rem 1.5rem;
+		    background-color: var(--primary);
+		    color: white;
+		    border: none;
+		    border-radius: 0.75rem;
+		    cursor: pointer;
+		}
 
 		.download-btn:hover {
 		    background-color: var(--secondary);
@@ -243,7 +252,7 @@
                 <input type="checkbox" id="saveData">
                 <label for="saveData">Remember Downloaded Apps</label>
             </div>
-            <button class="download-btn" onclick="saveSettings()">Save</button>
+            <button id="save_settings" onclick="saveSettings()">Save</button>
         </div>
     </div>
 
