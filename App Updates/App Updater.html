@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="https://ethanselagea.weebly.com/uploads/1/5/0/7/150702136/code_circle_icon_240653.webp">
     <title>App Store</title>
     <style>
         :root {
@@ -57,15 +56,11 @@
             color: white;
         }
 
-        .nav-button:hover:not(.active) {
-            background-color: #f1f5f9;
-        }
-
         .settings-button {
             background: none;
             border: none;
             cursor: pointer;
-            padding: 0.2rem;
+            padding: 0.5rem;
             font-size: 24px;
         }
 
@@ -75,93 +70,30 @@
             padding: 0 1rem;
         }
 
-        .update-container {
-		    display: grid;
-		    gap: 1rem;
-		}
+        .update {
+            background-color: var(--card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
 
-		.update {
-		    background-color: var(--card);
-		    border-radius: 1rem;
-		    padding: 1.5rem;
-		    display: flex;
-		    justify-content: space-between;
-		    align-items: center;
-		    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-		    transition: transform 0.2s;
-		    cursor: pointer;
-		}
+        .download-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
 
-		.update-info {
-		    flex: 1;
-		    overflow: hidden;
-		}
-
-		.update-title {
-		    font-size: 1.25rem;
-		    font-weight: 600;
-		    margin-bottom: 0.5rem;
-		}
-
-		.update-version {
-		    color: #64748b;
-		    font-size: 0.875rem;
-		    margin-bottom: 0.5rem;
-		}
-
-		.details {
-		    color: #475569;
-		    max-height: 0;
-		    overflow: hidden;
-		    transition: max-height 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.6s;
-		    opacity: 0;
-		}
-
-		.download-btn {
-		    display: none;
-		    padding: 0.75rem 1.5rem;
-		    background-color: var(--primary);
-		    color: white;
-		    border: none;
-		    border-radius: 0.75rem;
-		    cursor: pointer;
-		    font-weight: 500;
-		    transition: background-color 0.2s;
-		}
-		
-		#save_settings {
-			padding: 0.75rem 1.5rem;
-		    background-color: var(--primary);
-		    color: white;
-		    border: none;
-		    border-radius: 0.75rem;
-		    cursor: pointer;
-		}
-
-		.download-btn:hover {
-		    background-color: var(--secondary);
-		}
-
-		.update.show {
-		    opacity: 0;
-		    transition: opacity 0.6s ease-in-out;
-		}
-
-		.update:hover .details {
-		    max-height: 100px;
-		    opacity: 1;
-		}
-
-		.update:hover {
-		    transform: scale(1.02);
-		    padding-top: 2rem;
-		    padding-bottom: 2rem;
-		}
-
-		.update:hover .download-btn {
-		    display: block;
-		}
-
+        .download-btn:hover {
+            background-color: var(--secondary);
+        }
 
         .modal {
             display: none;
@@ -172,6 +104,8 @@
             bottom: 0;
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 1000;
+            justify-content: center;
+            align-items: center;
         }
 
         .modal-content {
@@ -180,51 +114,21 @@
             padding: 2rem;
             width: 90%;
             max-width: 500px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
         }
 
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-        }
-
-        .settings-option {
-            margin-bottom: 1rem;
-        }
-
-        .no-updates {
-            text-align: center;
-            padding: 2rem;
-            color: #64748b;
-            font-size: 1.1rem;
-        }
-
-        .error {
-            color: #ef4444;
-            text-align: center;
-            padding: 1rem;
-        }
-
-        .notification-banner {
+        #save_settings {
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
             background-color: var(--primary);
             color: white;
-            padding: 1rem;
-            text-align: center;
-            display: none;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
 
-        .notification-banner button {
-            margin-left: 1rem;
-            padding: 0.25rem 0.75rem;
-            background: white;
-            color: var(--primary);
-            border: none;
-            border-radius: 0.25rem;
-            cursor: pointer;
+        #save_settings:hover {
+            background-color: var(--secondary);
         }
     </style>
 </head>
@@ -234,151 +138,69 @@
             <button class="nav-button active" data-view="new">New Apps</button>
             <button class="nav-button" data-view="updates">Updates</button>
         </div>
-        <button class="settings-button" onclick="document.getElementById('settingsModal').style.display = 'block'">
-            ⚙️
-        </button>
+        <button class="settings-button" onclick="document.getElementById('settingsModal').style.display='flex'">⚙️</button>
     </div>
 
-    <div class="container">
-        <div class="update-container" id="updateContainer">
-            <p>Loading...</p>
-        </div>
-    </div>
+    <div class="container" id="updateContainer">Loading...</div>
 
     <div id="settingsModal" class="modal">
         <div class="modal-content">
-            <h2 class="modal-title">Settings</h2>
-            <div class="settings-option">
-                <input type="checkbox" id="saveData">
-                <label for="saveData">Remember Downloaded Apps</label>
-            </div>
+            <h2>Settings</h2>
+            <label>
+                <input type="checkbox" id="saveData"> Remember Downloaded Apps
+            </label>
             <button id="save_settings" onclick="saveSettings()">Save</button>
         </div>
     </div>
 
     <script>
-        let currentView = 'new';
-        let settings = JSON.parse(localStorage.getItem('settings')) || {
-            saveData: false,
+        const state = {
+            currentView: 'new',
+            settings: JSON.parse(localStorage.getItem('settings')) || { saveData: false }
         };
-        
-        document.addEventListener('DOMContentLoaded', function () {
-	    const updates = document.querySelectorAll('.update');
-	    
-	    updates.forEach(update => {
-	        update.addEventListener('mouseover', () => {
-	            const details = update.querySelector('.details');
-	            details.style.maxHeight = details.scrollHeight + 'px';
-	            details.style.opacity = 1;
-	        });
 
-	        update.addEventListener('mouseleave', () => {
-	            const details = update.querySelector('.details');
-	            details.style.maxHeight = '0';
-	            details.style.opacity = 0;
-	        });
-	    });
-	});
+        function loadView() {
+            const updateContainer = document.getElementById('updateContainer');
+            const installedApps = JSON.parse(localStorage.getItem('installedApps')) || [];
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadView(currentView);
-            updateSettingsUI();
+            fetch('https://raw.githubusercontent.com/eselagas/main/refs/heads/main/update_info')
+                .then(response => response.json())
+                .then(data => {
+                    const updates = (Array.isArray(data.updates) ? data.updates : [data.updates])
+                        .filter(update => update.type === (state.currentView === 'new' ? 'new' : 'update'));
 
-            document.querySelectorAll('.nav-button').forEach(button => {
-                button.addEventListener('click', () => {
-                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    currentView = button.dataset.view;
-                    loadView(currentView);
+                    const finalUpdates = state.settings.saveData 
+                        ? updates.filter(update => !installedApps.includes(update.title))
+                        : updates;
+
+                    updateContainer.innerHTML = finalUpdates.length 
+                        ? finalUpdates.map(update => `
+                            <div class="update">
+                                <div>
+                                    <p>${update.title}</p>
+                                    <p>Version: ${update.version} | Size: ${update.size}</p>
+                                </div>
+                                <button class="download-btn" 
+                                    onclick="downloadUpdate('${update.updateLocation}', '${update.title}')">
+                                    ${state.currentView === 'new' ? 'Download' : 'Update'}
+                                </button>
+                            </div>
+                        `).join('')
+                        : `<p>No ${state.currentView === 'new' ? 'new apps' : 'updates'} available</p>`;
+                })
+                .catch(() => {
+                    updateContainer.innerHTML = '<p>Failed to fetch data. Please try again later.</p>';
                 });
-            });
-        });
+        }
 
-        function loadView(view) {
-	    const updateContainer = document.getElementById('updateContainer');
-	    const installedApps = JSON.parse(localStorage.getItem('installedApps')) || [];
-
-	    const updateUrl = 'https://raw.githubusercontent.com/eselagas/main/refs/heads/main/update_info';
-
-	    fetch(updateUrl)
-	        .then(response => response.json())
-	        .then(data => {
-	            updateContainer.innerHTML = '';
-	            
-	            const updates = Array.isArray(data.updates) ? data.updates : [data.updates];
-	            const filteredUpdates = updates.filter(update => {
-	                if (view === 'new') {
-	                    return update.type === 'new';
-	                } else {
-	                    return update.type === 'update';
-	                }
-	            });
-	            
-	            if (settings.saveData) {
-	                const finalUpdates = filteredUpdates.filter(update => {
-	                    return !installedApps.includes(update.title);
-	                });
-
-	                if (finalUpdates.length === 0) {
-	                    updateContainer.innerHTML = `<p class="no-updates">No ${view === 'new' ? 'new apps' : 'updates'} available</p>`;
-	                    return;
-	                }
-
-	                finalUpdates.forEach(update => {
-	                    const updateElement = document.createElement('div');
-	                    updateElement.className = 'update';
-	                    updateElement.innerHTML = `
-	                        <div class="update-info">
-	                            <p class="update-title">${update.title}</p>
-	                            <p class="update-version">Version: ${update.version}<br>Size: ${update.size}</p>
-	                            <p class="details">${update.details}</p>
-	                        </div>
-	                        <button class="download-btn" onclick="downloadUpdate('${update.updateLocation}', this, '${update.title}')">
-	                            ${view === 'new' ? 'Download' : 'Update'}
-	                        </button>
-	                    `;
-	                    updateContainer.appendChild(updateElement);
-	                });
-	            } else {
-	                if (filteredUpdates.length === 0) {
-	                    updateContainer.innerHTML = `<p class="no-updates">No ${view === 'new' ? 'new apps' : 'updates'} available</p>`;
-	                    return;
-	                }
-
-	                filteredUpdates.forEach(update => {
-	                    const updateElement = document.createElement('div');
-	                    updateElement.className = 'update';
-	                    updateElement.innerHTML = `
-	                        <div class="update-info">
-	                            <p class="update-title">${update.title}</p>
-	                            <p class="update-version">Version: ${update.version}<br>Size: ${update.size}</p>
-	                            <p class="details">${update.details}</p>
-	                        </div>
-	                        <button class="download-btn" onclick="downloadUpdate('${update.updateLocation}', this, '${update.title}')">
-	                            ${view === 'new' ? 'Download' : 'Update'}
-	                        </button>
-	                    `;
-	                    updateContainer.appendChild(updateElement);
-	                });
-	            }
-	        })
-	        .catch(error => {
-	            updateContainer.innerHTML = '<p class="error">Failed to fetch data. Please try again later.</p>';
-	        });
-	}
-
-        function downloadUpdate(url, button, title) {
+        function downloadUpdate(url, title) {
             fetch(url)
                 .then(res => res.blob())
                 .then(blob => {
-                    const downloadUrl = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
-                    a.style.display = 'none';
-                    a.href = downloadUrl;
+                    a.href = window.URL.createObjectURL(blob);
                     a.download = `${title}.html`;
-                    document.body.appendChild(a);
                     a.click();
-                    window.URL.revokeObjectURL(downloadUrl);
 
                     const installedApps = JSON.parse(localStorage.getItem('installedApps')) || [];
                     if (!installedApps.includes(title)) {
@@ -386,34 +208,39 @@
                         localStorage.setItem('installedApps', JSON.stringify(installedApps));
                     }
 
-                    button.style.backgroundColor = "green";
-                    button.textContent = currentView === 'new' ? "Downloaded!" : "Updated!";
-                    
-                    setTimeout(() => {
-                        loadView(currentView);
-                    }, 1000);
+                    loadView();
                 });
         }
 
         function saveSettings() {
-            settings = {
-                saveData: document.getElementById('saveData').checked,
+            state.settings = {
+                saveData: document.getElementById('saveData').checked
             };
-            localStorage.setItem('settings', JSON.stringify(settings));
+            localStorage.setItem('settings', JSON.stringify(state.settings));
             document.getElementById('settingsModal').style.display = 'none';
-            loadView(currentView);
+            loadView();
         }
 
-        function updateSettingsUI() {
-            document.getElementById('saveData').checked = settings.saveData;
-        }
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.nav-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    state.currentView = button.dataset.view;
+                    loadView();
+                });
+            });
 
-        window.onclick = function(event) {
-            const modal = document.getElementById('settingsModal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        }
+            document.getElementById('settingsModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('settingsModal')) {
+                    document.getElementById('settingsModal').style.display = 'none';
+                }
+            });
+
+            document.getElementById('saveData').checked = state.settings.saveData;
+            loadView();
+        });
     </script>
 </body>
 </html>
