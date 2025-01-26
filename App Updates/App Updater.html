@@ -95,6 +95,12 @@
             background-color: var(--secondary);
         }
 
+        p {
+            padding-right: 30px;
+            margin-top: 0.8rem;
+            color: #475569;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -179,7 +185,7 @@
                                 <div>
                                     <p>${update.title}</p>
                                     <p>Version: ${update.version} | Size: ${update.size}</p>
-                                    <p style="color: #475569; margin-top: 0.5rem;">${update.details}</p>
+                                    <p>${update.details}</p>
                                 </div>
                                 <button class="download-btn" 
                                     onclick="downloadUpdate('${update.updateLocation}', '${update.title}')">
