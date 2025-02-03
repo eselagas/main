@@ -182,13 +182,13 @@
         }
 	
 	/* Hour hand */
-	.hour { width: 34%; height: 4px; left: 15%; }
-        .minute { width: 40%; height: 3px; left: 5%; }
+	.hour { width: 34%; height: 4px; left: 16%; }
+        .minute { width: 43%; height: 3px; left: 7%; }
         .second {
-            width: 43%;
+            width: 44%;
             height: 2px;
             background: #999;
-            left: 5%;
+            left: 6%;
             transition: none;
             transform-origin: 100%;
         }
@@ -339,26 +339,26 @@
         }
 
         .timezone-select {
-		    padding: 12px 35px 12px 15px;
-		    outline: none;
-		    margin: 10px auto;
-		    border-radius: 15px;
-		    background: rgba(255, 255, 255, 0.9);
-		    color: #333;
-		    border: 1px solid rgba(0, 0, 0, 0.1);
-		    transition: all 0.3s ease;
-		    width: 80%;
-		    display: block;
-		    font-size: 16px;
-		    -webkit-appearance: none;
-		    -moz-appearance: none;
-		    appearance: none;
-		    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-		    background-repeat: no-repeat;
-		    background-position: right 10px center;
-		    background-size: 16px;
-		    cursor: pointer;
-		}
+	    padding: 12px 35px 12px 15px;
+	    outline: none;
+	    margin: 10px auto;
+	    border-radius: 15px;
+	    background: rgba(255, 255, 255, 0.9);
+	    color: #333;
+	    border: 1px solid rgba(0, 0, 0, 0.1);
+	    transition: all 0.3s ease;
+	    width: 80%;
+	    display: block;
+	    font-size: 16px;
+	    -webkit-appearance: none;
+	    -moz-appearance: none;
+	    appearance: none;
+	    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+	    background-repeat: no-repeat;
+	    background-position: right 10px center;
+	    background-size: 16px;
+	    cursor: pointer;
+	}
 
         .timezone-select:hover {
             transform: translateY(-2px);
@@ -371,17 +371,17 @@
         }
         
         .ringtone-select {
-        	padding: 5px;
-		    outline: none;
-		    margin: 10px auto;
-		    border-radius: 4px;
-		    background: rgba(255, 255, 255, 0.9);
-		    color: #333;
-		    border: 1px solid rgba(0, 0, 0, 0.1);
-		    transition: all 0.3s ease;
-		    display: block;
-		    font-size: 16px;
-		    cursor: pointer;
+            padding: 5px;
+	    outline: none;
+	    margin: 10px auto;
+	    border-radius: 4px;
+	    background: rgba(255, 255, 255, 0.9);
+	    color: #333;
+	    border: 1px solid rgba(0, 0, 0, 0.1);
+	    transition: all 0.3s ease;
+	    display: block;
+	    font-size: 16px;
+	    cursor: pointer;
         }
 
         @keyframes pulse {
@@ -566,7 +566,7 @@
 
 	    .container {
 	        gap: 15px;
-	        padding-top: 40px;
+	        padding-top: 30px;
 	    }
 
 	    #digitalClock {
@@ -664,7 +664,8 @@
 	    }
 	    
 	    .second { 
-	        width: 45%;
+	        width: 43%;
+		left: 7%;
 	        height: 2px;
 	    }
 		
