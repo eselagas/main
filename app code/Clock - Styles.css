@@ -182,10 +182,10 @@
         }
 	
 	/* Hour hand */
-	.hour { width: 35%; height: 4px; left: 15%; }
-        .minute { width: 45%; height: 3px; left: 5%; }
+	.hour { width: 34%; height: 4px; left: 15%; }
+        .minute { width: 40%; height: 3px; left: 5%; }
         .second {
-            width: 45%;
+            width: 43%;
             height: 2px;
             background: #999;
             left: 5%;
